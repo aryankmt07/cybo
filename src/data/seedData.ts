@@ -1,0 +1,598 @@
+import { Lesson, QuizQuestion, ThreatScenario, User } from '../types';
+
+export interface CyberShieldDatabase {
+  users: User[];
+  lessons: Lesson[];
+  scenarios: ThreatScenario[];
+  questions: QuizQuestion[];
+}
+
+export const INITIAL_SEED_DATA: CyberShieldDatabase = {
+  users: [
+    {
+      id: 'u-admin',
+      name: 'Platform Admin',
+      email: 'admin@cybershield.local',
+      password: 'Admin@123',
+      role: 'admin',
+      status: 'Active',
+      joinedAt: '2026-10-01',
+      completedLessons: [],
+      recentLessons: [],
+      scenarioAttempts: [],
+      quizAttempts: [],
+    },
+  ],
+  lessons: [
+    {
+      id: 'l-1',
+      category: 'Phishing Awareness',
+      title: 'Spotting Spoofed Domains and Urgency Traps',
+      description: 'Learn how attackers mimic trusted brands using lookalike domains and artificial deadlines.',
+      difficulty: 'Beginner',
+      duration: 10,
+      content: [
+        'Phishing messages succeed because they pair visual mimicry with psychological pressure. Attackers copy official brand logos, colors, and signatures while quietly altering the sender domain after the "@" symbol.',
+        'Common spoofing tricks include swapping letters with similar-looking digits (such as replacing "l" with "1" or "rn" with "m") or registering unrelated extensions like ".support", ".verify", or ".xyz".',
+        'Whenever an email demands action within 2 hours or threatens immediate account closure, pause before clicking. Legitimate organizations do not force emergency credential resets through embedded email buttons.',
+      ],
+      realWorldExample:
+        'An email appears from "Billing Support" demanding immediate invoice verification. Hovering over the button reveals http://paypa1-billing-check.invalid instead of the official domain.',
+      checklist: [
+        'Inspect the exact domain after the "@" symbol rather than trusting the bold display name.',
+        'Hover over buttons and links to preview the destination URL before clicking.',
+        'Open a new browser tab and type the official website address manually to verify alerts.',
+      ],
+      published: true,
+    },
+    {
+      id: 'l-2',
+      category: 'Phishing Awareness',
+      title: 'Smishing, Attachment Traps, and Social Engineering',
+      description: 'Recognize malicious HTML/ZIP attachments and urgent text message delivery lures.',
+      difficulty: 'Intermediate',
+      duration: 12,
+      content: [
+        'Social engineering extends far beyond email. Smishing (SMS phishing) targets mobile users with fake package delivery fees, utility disconnection notices, or surprise tax refunds.',
+        'Because phone screens hide full URL paths and make inspection harder, attackers rely on shortened links or misleading subdomains to lead victims to credential-harvesting pages.',
+        'Be equally cautious of unexpected email attachments ending in .html, .zip, .iso, or macro-enabled documents claiming to be "remittance slips" or "urgent courier receipts".',
+      ],
+      realWorldExample:
+        'A text message claims a parcel is held at customs and asks for a tiny re-delivery fee via a shortened link, capturing card numbers and CVVs.',
+      checklist: [
+        'Never open unexpected .html, .zip, or executable attachments from unverified senders.',
+        'Verify parcel tracking directly on the carrier’s official app or homepage.',
+        'Treat unsolicited messages creating panic or offering unexpected prizes with skepticism.',
+      ],
+      published: true,
+    },
+    {
+      id: 'l-3',
+      category: 'Online Payment Fraud',
+      title: 'UPI, QR Code, and Collect-Request Scams',
+      description: 'Understand why entering a payment PIN or scanning a QR code never deposits money into your account.',
+      difficulty: 'Beginner',
+      duration: 12,
+      content: [
+        'Digital payment scams frequently target people selling items on online marketplaces. A fraudster poses as an eager buyer and sends a QR code or payment request claiming you must accept it to receive funds.',
+        'This relies on reversing how payment authorization works: entering your UPI PIN or approving a collect request always authorizes an outgoing debit from your account—never an incoming credit.',
+        'Similarly, fake "refund" links sent over messaging apps redirect victims to lookalike payment portals designed to steal card numbers, expiry dates, and one-time passcodes.',
+      ],
+      realWorldExample:
+        'A buyer claims they transferred ₹4,500 and sends a QR code labeled "Scan & Enter PIN to Receive Payment." Scanning it actually initiates a ₹4,500 transfer out of the seller’s account.',
+      checklist: [
+        'Remember: you never enter a PIN or scan a QR code to receive money.',
+        'Read every payment app prompt carefully—check whether it says "Pay" or "Request".',
+        'Handle refunds strictly inside the official merchant app or website.',
+      ],
+      published: true,
+    },
+    {
+      id: 'l-4',
+      category: 'Online Payment Fraud',
+      title: 'Fake Checkout Pages and Card Skimming Defense',
+      description: 'Verify merchant authenticity before entering card numbers, CVVs, or banking credentials.',
+      difficulty: 'Intermediate',
+      duration: 14,
+      content: [
+        'Clone shopping websites lure buyers with steep, unrealistic discounts promoted through social ads. At checkout, they route payments through unencrypted forms or deceptive gateways.',
+        'A legitimate payment processor will never ask for your ATM PIN alongside your card number and CVV, nor will it ask you to disable bank alerts or share OTPs over a phone call.',
+        'Using virtual cards with strict transaction limits or app-based tokenization adds a protective layer even if a merchant database is later compromised.',
+      ],
+      realWorldExample:
+        'A counterfeit electronics store offers 75% off flagship headphones and routes checkout to an HTTP page asking for card number, CVV, and ATM PIN.',
+      checklist: [
+        'Verify the exact domain spelling and HTTPS status on the payment checkout screen.',
+        'Never enter an ATM PIN on an online shopping checkout form.',
+        'Enable instant SMS/app transaction alerts and set conservative online spending limits.',
+      ],
+      published: true,
+    },
+    {
+      id: 'l-5',
+      category: 'Password Security',
+      title: 'Passphrases, Entropy, and Password Managers',
+      description: 'Replace predictable passwords with unique passphrases that defeat brute-force and reuse attacks.',
+      difficulty: 'Beginner',
+      duration: 10,
+      content: [
+        'Reusing the same password across websites is the single most common cause of account takeovers. When one minor website suffers a data breach, automated bots test those leaked email-and-password pairs across banks, email providers, and shopping sites (credential stuffing).',
+        'Length beats arbitrary complexity. A random 4-word passphrase (like "copper-velvet-lantern-orbit") is far harder for computers to crack than a short 8-character password with one symbol substituted.',
+        'Because nobody can memorize 60 unique passphrases, a dedicated password manager stores encrypted credentials for each domain and refuses to autofill on spoofed lookalike URLs.',
+      ],
+      realWorldExample:
+        'A student uses the same password for a gaming forum and their primary email. After the forum leaks, attackers access their email within hours and reset their bank login.',
+      checklist: [
+        'Use a completely unique password for every single website—especially your primary email.',
+        'Aim for 14+ character passphrases rather than predictable personal dates or names.',
+        'Store credentials in a reputable password manager instead of plain text notes.',
+      ],
+      published: true,
+    },
+    {
+      id: 'l-6',
+      category: 'Password Security',
+      title: 'Multi-Factor Authentication (MFA) Hygiene',
+      description: 'Compare SMS OTPs, authenticator apps, and hardware keys to stop account hijacking.',
+      difficulty: 'Intermediate',
+      duration: 11,
+      content: [
+        'Multi-Factor Authentication adds a second verification step beyond your password. Even if an attacker steals your password, they cannot sign in without that second factor.',
+        'Not all 2FA methods offer equal protection. SMS codes can be intercepted through SIM-swapping attacks, whereas time-based authenticator apps (TOTP) and FIDO2 passkeys remain bound to your physical device.',
+        'Never approve unexpected MFA push notifications ("MFA fatigue" attacks) or read aloud a 6-digit verification code to anyone claiming to be customer support.',
+      ],
+      realWorldExample:
+        'At 2:00 AM, a user receives five consecutive login approval prompts they did not trigger. Rejecting them and changing the password immediately prevents an account breach.',
+      checklist: [
+        'Enable MFA on email, banking, cloud storage, and social accounts.',
+        'Prefer authenticator apps or passkeys over SMS codes whenever available.',
+        'Treat any unsolicited 2FA prompt as evidence that your password has been leaked.',
+      ],
+      published: true,
+    },
+    {
+      id: 'l-7',
+      category: 'Identity Theft',
+      title: 'Minimizing PII Exposure and Stopping SIM Swaps',
+      description: 'Protect personally identifiable information and lock down mobile carrier transfers.',
+      difficulty: 'Intermediate',
+      duration: 14,
+      content: [
+        'Identity thieves piece together small fragments of Personally Identifiable Information (PII)—birthdates, phone numbers, home addresses, and family details—to pass security questions or open fraudulent lines of credit.',
+        'In a SIM-swap attack, criminals gather enough personal details to impersonate you to your mobile carrier and transfer your phone number onto their SIM card, intercepting calls and SMS OTPs.',
+        'Adding a carrier port-out PIN and restricting sensitive personal milestones on public social profiles dramatically lowers your exposure.',
+      ],
+      realWorldExample:
+        'A user posts a photo of a new driver’s license and airline boarding pass online. Attackers extract the barcode data and date of birth to reset linked accounts.',
+      checklist: [
+        'Set a carrier transfer / SIM-lock PIN directly with your mobile network provider.',
+        'Never share photos of IDs, boarding passes, or financial documents on social platforms.',
+        'Use fictional answers for legacy "security questions" stored safely in your password manager.',
+      ],
+      published: true,
+    },
+    {
+      id: 'l-8',
+      category: 'Identity Theft',
+      title: 'Monitoring Breaches and Early Fraud Recovery',
+      description: 'Spot early signs of impersonation and take rapid containment steps if data leaks.',
+      difficulty: 'Advanced',
+      duration: 15,
+      content: [
+        'Early detection limits identity theft damage. Warning signs include unexpected password reset emails, unfamiliar login location alerts, missing mail, or unfamiliar transactions.',
+        'If you learn a service you use was breached, change that password immediately—along with any other account where you reused it—and revoke active sessions.',
+        'Keep credit alerts or card freezes enabled when not actively applying for loans, and document incident timelines if you ever need to file a dispute.',
+      ],
+      realWorldExample:
+        'A learner receives a "New device signed in from another country" email. They immediately revoke active sessions, rotate credentials, and check email forwarding rules.',
+      checklist: [
+        'Inspect email account forwarding rules if you suspect unauthorized access.',
+        'Sign out of all active sessions immediately after changing a compromised password.',
+        'Check bank statements weekly and enable push notifications for every charge.',
+      ],
+      published: true,
+    },
+    {
+      id: 'l-9',
+      category: 'Data Privacy',
+      title: 'Auditing Mobile App Permissions and Trackers',
+      description: 'Apply least-privilege permissions so utility apps do not harvest contacts or location history.',
+      difficulty: 'Beginner',
+      duration: 11,
+      content: [
+        'Many free mobile apps generate revenue by collecting device identifiers, contact lists, and continuous GPS coordinates. Before tapping "Allow", ask whether the app actually needs that sensor to work.',
+        'A calculator or PDF reader has no legitimate reason to access your contacts, microphone, or background location. Operating systems now allow one-time or "While Using the App" grants.',
+        'Similarly, review third-party "Sign in with Google/Apple" connections every few months and revoke apps you no longer use.',
+      ],
+      realWorldExample:
+        'A simple photo filter app requests continuous background location and full contact list access. Denying both leaves photo editing working normally.',
+      checklist: [
+        'Select "While Using" or "Ask Every Time" instead of "Always Allow" for location.',
+        'Deny contacts and microphone access to unrelated utility apps.',
+        'Audit and revoke unused third-party OAuth app integrations quarterly.',
+      ],
+      published: true,
+    },
+    {
+      id: 'l-10',
+      category: 'Data Privacy',
+      title: 'Public Wi-Fi Risks and Network Hygiene',
+      description: 'Stay safe on café, hotel, and airport Wi-Fi without exposing sensitive sessions.',
+      difficulty: 'Intermediate',
+      duration: 12,
+      content: [
+        'Open public Wi-Fi hotspots—especially networks without a password—can be impersonated by nearby attackers creating "Evil Twin" access points named after the café or airport.',
+        'While modern HTTPS encrypts website traffic in transit, unencrypted connections, DNS lookups, and misconfigured apps can still leak metadata or trigger captive-portal phishing traps.',
+        'Turn off automatic Wi-Fi joining on laptops and phones, use cellular data for banking when possible, or route untrusted public connections through a trustworthy VPN.',
+      ],
+      realWorldExample:
+        'At an airport, a network named "Free_Airport_WiFi_5G" prompts users to sign in with their personal email password to unlock internet access—a classic captive-portal harvest.',
+      checklist: [
+        'Disable "Auto-Join" for open and previously used public Wi-Fi networks.',
+        'Prefer mobile cellular data or a trusted VPN when accessing financial accounts away from home.',
+        'Never install profile certificates or browser updates prompted by a public Wi-Fi login screen.',
+      ],
+      published: true,
+    },
+    {
+      id: 'l-11',
+      category: 'Safe Internet Browsing',
+      title: 'HTTPS Verification and Browser Extension Safety',
+      description: 'Understand what the padlock icon guarantees—and what it does not.',
+      difficulty: 'Beginner',
+      duration: 10,
+      content: [
+        'HTTPS ensures that data traveling between your browser and the destination website is encrypted against eavesdropping on the network. However, HTTPS does NOT prove the website is honest or legitimate.',
+        'Attackers routinely obtain free HTTPS certificates for phishing domains like "bank-verify-login.invalid". You must verify both encryption AND the exact root domain name.',
+        'Browser extensions also wield broad power over web pages you visit. Install only well-reviewed extensions from verified publishers and remove unused add-ons regularly.',
+      ],
+      realWorldExample:
+        'A shopper sees a padlock icon on "amaz0n-outlet-deals.invalid" and assumes the site is genuine. Checking the domain spelling reveals the typo-squatted zero.',
+      checklist: [
+        'Check the root domain spelling carefully—HTTPS alone does not verify trustworthiness.',
+        'Treat browser warning screens ("Your connection is not private") as a hard stop.',
+        'Keep browser extensions minimal and inspect requested permissions before installing.',
+      ],
+      published: true,
+    },
+    {
+      id: 'l-12',
+      category: 'Safe Internet Browsing',
+      title: 'Avoiding Fake Software Updates and Malvertising',
+      description: 'Identify scareware popups, deceptive download buttons, and bundled installers.',
+      difficulty: 'Beginner',
+      duration: 11,
+      content: [
+        'A common web trap displays an urgent overlay claiming "Your browser or antivirus is critically outdated—click Update Now" and downloads an executable (.exe, .dmg, or .apk) installer.',
+        'Modern browsers update silently in the background or through their built-in Settings > About menu—never via random webpage popups or banner ads.',
+        'When downloading open-source utilities, stick to official vendor websites and skip oversized green "Download" ads that disguise adware bundles.',
+      ],
+      realWorldExample:
+        'While reading an article, a full-screen popup warns that 4 viruses were detected and urges running "SystemClean_Setup.exe". Closing the tab prevents malware infection.',
+      checklist: [
+        'Update browsers and operating systems exclusively through built-in system settings.',
+        'Close scareware popups claiming your device is infected—never call support numbers shown on them.',
+        'Verify file names and official publisher domains before running downloaded installers.',
+      ],
+      published: true,
+    },
+  ],
+  scenarios: [
+    {
+      id: 's-1',
+      category: 'Phishing Awareness',
+      title: 'Urgent Bank KYC Suspension Notice',
+      format: 'email',
+      prompt: 'Inspect the sender address, message tone, and destination link preview below. What is the safest action?',
+      artifact: {
+        senderName: 'GlobalBank Security Desk',
+        senderAddress: 'kyc-alert@g1obalbank-verify.invalid',
+        subject: 'FINAL WARNING: Account blocked in 2 hours',
+        body: 'Dear Valued Customer, your digital banking profile has been flagged for incomplete KYC verification. Failure to verify within 2 hours will result in permanent suspension of your funds.',
+        ctaText: 'Verify KYC Immediately',
+        hoverUrl: 'http://g1obalbank-verify.invalid/auth-kyc',
+      },
+      redFlags: [
+        'Typosquatted sender domain "g1obalbank-verify.invalid" (digit 1 instead of L)',
+        'Artificial 2-hour panic deadline designed to rush judgment',
+        'Unencrypted HTTP destination link unrelated to the bank’s real domain',
+      ],
+      options: [
+        'Click "Verify KYC Immediately" right away so your funds are not frozen.',
+        'Reply to the email asking for your branch manager’s confirmation.',
+        'Do not click the link; delete/report the email and check your account by typing the official bank URL manually.',
+        'Forward the email to friends to see if they also received it.',
+      ],
+      correctIndex: 2,
+      explanation:
+        'Attackers swap "l" for "1" in "g1obalbank" and manufacture a 2-hour deadline to bypass critical thinking. Never use links inside urgent financial emails; always visit the official site independently.',
+    },
+    {
+      id: 's-2',
+      category: 'Online Payment Fraud',
+      title: 'Marketplace Buyer QR Code Trap',
+      format: 'sms',
+      prompt: 'You listed an item for ₹4,500 on a classifieds site. A buyer sends this message asking you to scan a QR code to receive money. How should you respond?',
+      artifact: {
+        senderName: '+91 98XXX 44102 (Marketplace Buyer)',
+        body: 'Hi! I have approved the ₹4,500 payment to you. Please scan the QR code I just sent and enter your UPI PIN to ACCEPT the funds into your bank account immediately.',
+      },
+      redFlags: [
+        'Claims a UPI PIN must be entered to RECEIVE funds',
+        'Uses urgency ("immediately") to pressure scanning an unknown QR code',
+      ],
+      options: [
+        'Scan the QR code and enter your UPI PIN so the ₹4,500 arrives.',
+        'Refuse and block the sender: entering a UPI PIN always authorizes outgoing payments, never incoming credits.',
+        'Send a photo of your debit card instead for an easier transfer.',
+        'Test the QR code with ₹1 first to see if it deposits.',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Entering a UPI PIN or scanning a payment QR code only authorizes money leaving your account. You never need to enter a PIN to receive funds.',
+    },
+    {
+      id: 's-3',
+      category: 'Password Security',
+      title: 'Spoofed Cloud Document Sign-In',
+      format: 'web',
+      prompt: 'A link shared in a group chat opens this login prompt to "view a shared PDF." Inspect the browser bar and requested fields carefully.',
+      artifact: {
+        url: 'http://cloud-docs-viewer.example.invalid/login?ref=doc42',
+        https: false,
+        heading: 'Sign in with Work Email & Verification OTP',
+        fields: ['Work Email Address', 'Email Password', '6-Digit SMS OTP'],
+      },
+      redFlags: [
+        'Missing HTTPS encryption ("Not Secure" / plain http://)',
+        'Unfamiliar domain "cloud-docs-viewer.example.invalid"',
+        'Simultaneously requests both email password and SMS OTP to bypass MFA in real time',
+      ],
+      options: [
+        'Enter your email and password since the layout looks clean.',
+        'Close the page immediately: it uses an unencrypted lookalike domain to harvest your password and live OTP.',
+        'Type an old password just to preview the document.',
+        'Proceed and turn off browser security warnings.',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Real-time phishing kits ask for both your password and SMS OTP on a lookalike unencrypted page so attackers can immediately log into your real account before the OTP expires.',
+    },
+    {
+      id: 's-4',
+      category: 'Online Payment Fraud',
+      title: 'Suspicious Discount Checkout Gateway',
+      format: 'payment',
+      prompt: 'You clicked an ad for 80% off headphones and reached this checkout screen. Spot the warning signs before paying.',
+      artifact: {
+        url: 'http://mega-deals-checkout.example.invalid/pay',
+        https: false,
+        merchant: 'BrandOutlet Mega Clearance',
+        amount: '$29.00 (Usually $249.00)',
+        fields: ['16-Digit Card Number', 'Expiry & CVV', '4-Digit ATM PIN'],
+      },
+      redFlags: [
+        'Checkout runs over unencrypted http:// ("Not Secure")',
+        'Requests your 4-digit ATM PIN alongside CVV—legitimate online checkouts never ask for an ATM PIN',
+        'Unrealistic 80% clearance discount on a mismatched domain',
+      ],
+      options: [
+        'Complete the payment quickly before the discount timer expires.',
+        'Abandon the checkout immediately: legitimate online stores use HTTPS and never ask for your ATM PIN.',
+        'Enter your debit card details but leave the ATM PIN blank.',
+        'Use a friend’s card to test whether the website is real.',
+      ],
+      correctIndex: 1,
+      explanation:
+        'No legitimate online e-commerce checkout asks for your ATM PIN, and sensitive payment details should never be submitted over plain HTTP on an unfamiliar domain.',
+    },
+    {
+      id: 's-5',
+      category: 'Safe Internet Browsing',
+      title: 'Fake Browser Critical Update Overlay',
+      format: 'web',
+      prompt: 'While browsing an unfamiliar blog, your screen displays a prompt urging an immediate browser security patch download.',
+      artifact: {
+        url: 'http://browser-patch-cdn.example.invalid/update',
+        https: false,
+        heading: 'CRITICAL ALERT: Browser Outdated — Run Patch_v12.exe',
+        fields: ['Download Package: Browser_Update_Fix.exe (4.8 MB)'],
+      },
+      redFlags: [
+        'Third-party webpage claiming your browser needs a manual .exe patch',
+        'Alarmist "CRITICAL ALERT" scareware framing over insecure HTTP',
+      ],
+      options: [
+        'Download and run Browser_Update_Fix.exe immediately.',
+        'Close the tab immediately and verify browser updates only via your browser’s built-in Settings > About menu.',
+        'Temporarily pause antivirus protection so the patch installs smoothly.',
+        'Bookmark the site for future updates.',
+      ],
+      correctIndex: 1,
+      explanation:
+        'Browsers update automatically through built-in vendor channels—never via random webpage popups serving executable installers, which commonly deliver malware.',
+    },
+    {
+      id: 's-6',
+      category: 'Identity Theft',
+      title: 'Unexpected Carrier Support Verification Call/SMS',
+      format: 'sms',
+      prompt: 'You receive an unexpected text message claiming your mobile number will be deactivated unless you reply with a verification code just sent to your phone.',
+      artifact: {
+        senderName: 'Carrier-Alert-Support',
+        body: 'URGENT: Your SIM registration failed verification. Reply with the 6-digit OTP just sent to your phone within 10 minutes to prevent service disconnection.',
+      },
+      redFlags: [
+        'Asks you to forward or reply with a 6-digit OTP code',
+        'Short 10-minute deadline threatening service loss',
+      ],
+      options: [
+        'Reply with the 6-digit code quickly so your phone stays active.',
+        'Never share the OTP: attackers are attempting a password reset or SIM swap using your verification code.',
+        'Reply with your date of birth instead to prove identity.',
+        'Call the number listed inside the SMS.',
+      ],
+      correctIndex: 1,
+      explanation:
+        'One-time verification codes are strictly for your own login or carrier action. Attackers trigger a reset or SIM transfer on your account and trick you into handing over the confirmation OTP.',
+    },
+  ],
+  questions: [
+    {
+      id: 'q-1',
+      category: 'Phishing Awareness',
+      question: 'Which detail in an incoming email most reliably identifies the true sending organization?',
+      options: [
+        'The bold display name shown next to the subject line',
+        'The official company logo embedded inside the email body',
+        'The exact domain name appearing after the "@" symbol in the sender address',
+        'The presence of a legal disclaimer in the email footer',
+      ],
+      correctIndex: 2,
+      explanation: 'Display names, logos, and footers are trivial to copy. Always inspect the full domain name after "@" (for example, @paypa1-verify.invalid vs @paypal.com).',
+    },
+    {
+      id: 'q-2',
+      category: 'Phishing Awareness',
+      question: 'What is the safest first step when an email warns your bank account will close in 2 hours unless you click a verification button?',
+      options: [
+        'Click the link inside the email to check if the page looks legitimate',
+        'Open a new browser tab, type your bank’s official address manually, and check notifications there',
+        'Reply to the sender asking for employee verification',
+        'Download any attached PDF form to read offline',
+      ],
+      correctIndex: 1,
+      explanation: 'Navigating independently in a fresh tab bypasses deceptive links completely and lets you verify whether any real alert exists.',
+    },
+    {
+      id: 'q-3',
+      category: 'Online Payment Fraud',
+      question: 'When using UPI or instant payment apps, when should you enter your payment PIN?',
+      options: [
+        'Only when you are authorizing money to be paid out of your account',
+        'Whenever a buyer sends a QR code so you can receive their payment',
+        'To claim cashback rewards or merchant refunds',
+        'Both when sending and receiving bank transfers',
+      ],
+      correctIndex: 0,
+      explanation: 'A payment PIN strictly authorizes outgoing debits. Receiving money or refunds never requires scanning a QR code or entering your PIN.',
+    },
+    {
+      id: 'q-4',
+      category: 'Online Payment Fraud',
+      question: 'Which field on an online shopping checkout form is a major warning sign of a fraudulent payment page?',
+      options: [
+        'Cardholder Name',
+        'Card Expiration Date',
+        '4-digit ATM PIN requested alongside card details',
+        'Billing ZIP or Postal Code',
+      ],
+      correctIndex: 2,
+      explanation: 'Legitimate online payment gateways never request your 4-digit ATM PIN. Asking for it indicates a credential-harvesting scam.',
+    },
+    {
+      id: 'q-5',
+      category: 'Password Security',
+      question: 'Why is reusing the same strong password across multiple websites dangerous?',
+      options: [
+        'Browsers slow down when passwords are identical',
+        'If one smaller website leaks its database, automated credential-stuffing bots try that password on your email and bank',
+        'Password managers block duplicate passwords from saving',
+        'Websites automatically lock accounts with matching lengths',
+      ],
+      correctIndex: 1,
+      explanation: 'Credential stuffing uses leaked email/password pairs from one breach to break into high-value accounts where the victim reused the same password.',
+    },
+    {
+      id: 'q-6',
+      category: 'Password Security',
+      question: 'Which two-factor authentication (2FA) method offers stronger protection against SIM-swap attacks?',
+      options: [
+        'SMS text message codes',
+        'Authenticator app (TOTP) or hardware security passkey',
+        'Repeating your security question answer',
+        'Sending a backup code to your own email',
+      ],
+      correctIndex: 1,
+      explanation: 'Authenticator apps and hardware passkeys stay bound to your physical device rather than your mobile phone number, making SIM swaps ineffective.',
+    },
+    {
+      id: 'q-7',
+      category: 'Identity Theft',
+      question: 'What is the most effective action to protect your mobile number from unauthorized SIM-swap transfers?',
+      options: [
+        'Turn off mobile data overnight',
+        'Set a carrier account transfer / port-out PIN with your mobile provider',
+        'Clear your call history weekly',
+        'Avoid saving contacts by full name',
+      ],
+      correctIndex: 1,
+      explanation: 'A carrier port-out PIN prevents attackers who have gathered basic personal details from transferring your number to a new SIM.',
+    },
+    {
+      id: 'q-8',
+      category: 'Identity Theft',
+      question: 'Why should you avoid posting photos of airline boarding passes or official IDs on social media?',
+      options: [
+        'The image compression lowers phone storage',
+        'Barcodes and printed fields expose personal identifiers attackers can use for impersonation and account recovery',
+        'Airlines charge fees for social sharing',
+        'Cameras embed Wi-Fi passwords in JPEGs',
+      ],
+      correctIndex: 1,
+      explanation: 'Boarding pass barcodes and IDs contain full names, reservation codes, and identity numbers that help attackers hijack accounts.',
+    },
+    {
+      id: 'q-9',
+      category: 'Data Privacy',
+      question: 'A simple note-taking app asks for continuous background GPS location and access to your contacts. What is the best privacy practice?',
+      options: [
+        'Grant all permissions so the app installs cleanly',
+        'Deny unnecessary permissions—only grant access directly required for the app’s core purpose',
+        'Share your email password instead of location',
+        'Keep Airplane Mode enabled permanently',
+      ],
+      correctIndex: 1,
+      explanation: 'Applying the principle of least privilege limits unnecessary tracking and data harvesting by over-privileged apps.',
+    },
+    {
+      id: 'q-10',
+      category: 'Data Privacy',
+      question: 'What is the safest approach when connecting to open public Wi-Fi at an airport or café?',
+      options: [
+        'Turn off auto-join, avoid banking logins on untrusted networks, or use cellular data / a trusted VPN',
+        'Enter your personal email password on any Wi-Fi splash screen that asks for it',
+        'Disable your device firewall for faster speeds',
+        'Trust any network named "Free_Airport_5G" automatically',
+      ],
+      correctIndex: 0,
+      explanation: 'Open hotspots can be spoofed ("Evil Twin" networks). Avoid sensitive transactions on unverified public Wi-Fi or protect traffic with cellular data or a trusted VPN.',
+    },
+    {
+      id: 'q-11',
+      category: 'Safe Internet Browsing',
+      question: 'What does a valid HTTPS padlock icon in the browser address bar actually guarantee?',
+      options: [
+        'The website is 100% honest and cannot be a phishing site',
+        'Traffic between your browser and that server is encrypted, though you must still verify the domain spelling',
+        'Files downloaded from the site are guaranteed virus-free',
+        'The site stores zero cookies',
+      ],
+      correctIndex: 1,
+      explanation: 'HTTPS protects data in transit via encryption, but phishing websites can also use HTTPS certificates—always double-check the exact domain name.',
+    },
+    {
+      id: 'q-12',
+      category: 'Safe Internet Browsing',
+      question: 'A flashing webpage popup claims your browser is critically outdated and prompts you to download "Update_Patch.exe". What should you do?',
+      options: [
+        'Run the downloaded file right away',
+        'Close the tab and check for browser updates strictly through the browser’s built-in Settings > About menu',
+        'Disable antivirus temporarily during installation',
+        'Restart your router and click the popup again',
+      ],
+      correctIndex: 1,
+      explanation: 'Genuine browsers never distribute updates through third-party webpage popups. Those downloads are classic scareware/malware lures.',
+    },
+  ],
+};
